@@ -1,0 +1,48 @@
+{
+  "name": "unicms",
+  "version": "0.5.0-alpha",
+  "type": "module",
+  "license": "MIT",
+  "author": "Benjamin Dawson",
+  "description": "UniCMS is a universal Content Management System developed by UC Berkeley EECS and UniJS team.",
+  "bin": {
+    "unicms": "./dist/unicms.mjs"
+  },
+  "scripts": {
+    "pack": "tsx ./scripts/esbuild.ts",
+    "debug": "tsx ./bin/unicms.ts",
+    "dev": "unicms dev",
+    "build": "unicms build",
+    "start": "unicms start"
+  },
+  "dependencies": {
+    "axios": "^1.7.7",
+    "commander": "^13.0.0",
+    "drizzle-orm": "^0.38.3",
+    "express": "^4.21.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router": "^7.2.0",
+    "tailwindcss": "^4.0.9",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/vite": "^4.0.8",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.7.5",
+    "@types/react": "19.0.6",
+    "@types/react-dom": "^19.0.3",
+    "@vitejs/plugin-react": "^4.3.4",
+    "copy-to-clipboard": "^3.3.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "drizzle-kit": "^0.30.1",
+    "esbuild": "^0.24.2",
+    "esbuild-node-externals": "^1.18.0",
+    "mysql2": "^3.12.0",
+    "typescript": "^5.6.3",
+    "vite": "^6.1.0"
+  }
+}

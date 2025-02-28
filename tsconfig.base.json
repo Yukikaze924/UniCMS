@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "rootDir": ".",
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "strict": true,
+        "declaration": true,
+        "noImplicitAny": false,
+        "noImplicitThis": true,
+        "noUnusedLocals": false,
+        "noImplicitOverride": true,
+        "esModuleInterop": true,
+        "useUnknownInCatchVariables": false,
+        "incremental": false,
+        "isolatedModules": true,
+        "resolveJsonModule": true,
+        "skipLibCheck": true
+    }
+}

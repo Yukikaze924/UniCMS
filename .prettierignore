@@ -1,0 +1,38 @@
+# UniCMS
+.unicms/
+/api/**/*
+
+# Package Manager
+node_modules/
+pnpm-workspace.yaml
+pnpm-lock.yaml
+
+# Environments
+.vscode/
+*.md
+*.json
+
+# Output
+dist
+
+# UnitTest
+*.test.*
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# dotenv environment variables file
+.env.*
+
+# next.js build output
+.next
