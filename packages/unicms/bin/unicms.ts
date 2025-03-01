@@ -7,4 +7,4 @@ config();
 
 ensureEnvVariables();
 
-import("../src/cli");
+import('../src/cli');

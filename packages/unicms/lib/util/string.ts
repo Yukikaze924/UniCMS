@@ -39,15 +39,12 @@ export function extractInitials(str: string) {
             const first = str.charAt(0).toUpperCase();
             const second = str.charAt(1).toUpperCase();
             return first + second;
-        }
-        else if (checkFirstCharType(parts[0]) === 'letter' && checkFirstCharType(parts[1]) !== 'letter') {
+        } else if (checkFirstCharType(parts[0]) === 'letter' && checkFirstCharType(parts[1]) !== 'letter') {
+            return str.charAt(0).toUpperCase();
+        } else if (checkFirstCharType(parts[0]) === 'cjk') {
             return str.charAt(0).toUpperCase();
         }
-        else if (checkFirstCharType(parts[0]) === 'cjk') {
-            return str.charAt(0).toUpperCase();
-        }
-    }
-    else {
+    } else {
         return str.charAt(0).toUpperCase();
     }
 }
@@ -60,10 +57,8 @@ export function truncateWithEllipsis(str: string, maxLength: number, ellipsis: s
 }
 
 export function maskPassword(str: string, maxLength: number): string {
-    if (!str || str.length >= maxLength)
-        return '•'.repeat(maxLength);
-    else
-        return '•'.repeat(str.length);
+    if (!str || str.length >= maxLength) return '•'.repeat(maxLength);
+    else return '•'.repeat(str.length);
 }
 
 export function getExtension(str: string): string | undefined {

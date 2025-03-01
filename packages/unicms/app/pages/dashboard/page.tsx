@@ -5,7 +5,10 @@ export default function Page() {
                 <div className="flex flex-col space-y-6 md:space-y-0 md:flex-row justify-between">
                     <div className="mr-6">
                         <h1 className="text-4xl font-semibold font-[Inter] mb-2">Dashboard</h1>
-                        <h2 className="text-gray-600 ml-0.5">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</h2>
+                        <h2 className="text-gray-600 ml-0.5">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                            labore et dolore magna aliqua.
+                        </h2>
                     </div>
                     <div className="flex flex-wrap items-start justify-end -mb-3">
                         <button className="inline-flex px-5 py-3 text-indigo-600 hover:text-indigo-700 focus:text-indigo-700 hover:bg-indigo-100 focus:bg-indigo-100 border border-indigo-600 rounded-md mb-3">
@@ -108,9 +111,7 @@ export default function Page() {
                         </div>
                         <div>
                             <span className="inline-block text-2xl font-bold">9</span>
-                            <span className="inline-block text-xl text-gray-500 font-semibold">
-                                (14%)
-                            </span>
+                            <span className="inline-block text-xl text-gray-500 font-semibold">(14%)</span>
                             <span className="block text-gray-500">Underperforming students</span>
                         </div>
                     </div>
@@ -223,7 +224,7 @@ export default function Page() {
                             </button>
                             {/* Refer here for full dropdown menu code: https://tailwindui.com/components/application-ui/elements/dropdowns */}
                         </div>
-                        <div className="overflow-y-auto" style={{ maxHeight: "24rem" }}>
+                        <div className="overflow-y-auto" style={{ maxHeight: '24rem' }}>
                             <ul className="p-6 space-y-6">
                                 <li className="flex items-center">
                                     <div className="h-10 w-10 mr-3 bg-gray-100 rounded-full overflow-hidden">
@@ -320,7 +321,6 @@ export default function Page() {
                     </div>
                 </section>
             </div>
-
         </>
-    )
+    );
 }

@@ -1,9 +1,8 @@
-import path from "path";
-import RouteHandler from "@/lib/handler/RouteHandler";
+import path from 'path';
+import RouteHandler from '@/lib/handler/RouteHandler';
 import fs from 'fs/promises';
-import CollectionService from "@/lib/services/storage/CollectionService";
-import { Dirent } from "fs";
-
+import CollectionService from '@/lib/services/storage/CollectionService';
+import { Dirent } from 'fs';
 
 abstract class RouterService {
     protected router: any;
@@ -12,7 +11,7 @@ abstract class RouterService {
 
     constructor(router: any) {
         this.router = router;
-        this.methods = ['GET', 'POST', 'PUT', 'DELETE']
+        this.methods = ['GET', 'POST', 'PUT', 'DELETE'];
     }
 
     /**
@@ -122,7 +121,7 @@ abstract class RouterService {
         const prefix = relativePath ? `/${relativePath}` : '';
 
         try {
-            const collection = await fs.readFile(path.join(dirPath, "schema.json"), 'utf-8'); // Read file as text
+            const collection = await fs.readFile(path.join(dirPath, 'schema.json'), 'utf-8'); // Read file as text
             const parsedCollection = JSON.parse(collection); // Parse JSON
             const handler = new RouteHandler(new CollectionService(parsedCollection));
             this.respond(`/api${prefix}/:id?`, (req, res) => handler.handle(this.createHttpAdapter(req, res)));
@@ -133,7 +132,7 @@ abstract class RouterService {
     }
 
     protected isValidFile(dirent: Dirent): boolean {
-        return dirent.isFile() && dirent.name === "schema.json";
+        return dirent.isFile() && dirent.name === 'schema.json';
     }
 }
 

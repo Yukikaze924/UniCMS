@@ -3,7 +3,7 @@
  */
 type ICollection = {
     collectionName: string;
-    options?: Options
+    options?: Options;
     info: Info;
     attributes: Attribute[];
 };
@@ -13,7 +13,7 @@ type ICollection = {
  */
 type Options = Partial<{
     private: boolean;
-}>
+}>;
 
 /**
  * Metadata information about the collection.
@@ -96,10 +96,4 @@ type JsonAttribute = AttributeBase & {
 /**
  * Union type for all attribute types.
  */
-type Attribute =
-    | IntAttribute
-    | StringAttribute
-    | DateAttribute
-    | FloatAttribute
-    | BooleanAttribute
-    | JsonAttribute;
+type Attribute = IntAttribute | StringAttribute | DateAttribute | FloatAttribute | BooleanAttribute | JsonAttribute;

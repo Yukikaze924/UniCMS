@@ -11,6 +11,7 @@ pnpm-lock.yaml
 .vscode/
 *.md
 *.json
+vite.config.*
 
 # Output
 dist

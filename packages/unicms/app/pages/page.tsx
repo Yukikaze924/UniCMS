@@ -1,15 +1,14 @@
-import { Outlet, useLocation, useNavigate } from "react-router";
-import Header from "../components/header";
-import Sidebar from "../components/sidebar";
-import { useEffect } from "react";
+import { Outlet, useLocation, useNavigate } from 'react-router';
+import Header from '../components/header';
+import Sidebar from '../components/sidebar';
+import { useEffect } from 'react';
 
 export default function Page() {
     const { pathname } = useLocation();
     const nav = useNavigate();
 
     useEffect(() => {
-        if (pathname === '/')
-            nav('/dashboard');
+        if (pathname === '/') nav('/dashboard');
     }, [pathname]);
 
     return (
@@ -24,5 +23,5 @@ export default function Page() {
                 </div>
             </div>
         </>
-    )
+    );
 }

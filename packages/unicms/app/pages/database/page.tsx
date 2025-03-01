@@ -1,10 +1,9 @@
-'use client'
+'use client';
 
-import { useEffect, useRef, useState } from "react";
-import { MysqlColored, TableColored } from "../../components/svg/mysql";
-import { JsonColored } from "../../components/svg/json";
-import MysqlTable from "./mysql-table";
-
+import { useEffect, useRef, useState } from 'react';
+import { MysqlColored, TableColored } from '../../components/svg/mysql';
+import { JsonColored } from '../../components/svg/json';
+import MysqlTable from './mysql-table';
 
 export default function Page() {
     const [sourceDropdown, setSourceDropdown] = useState(false);
@@ -13,7 +12,6 @@ export default function Page() {
     const [tables, setTables] = useState<any[]>();
     const [selectedTable, setSelectedTable] = useState<string>();
     const exportBtnRef = useRef<HTMLButtonElement>(null);
-
 
     const handleSourceChange = (source: any) => {
         setSelectedSource(source);
@@ -25,22 +23,18 @@ export default function Page() {
         setTableDropdown(false);
     };
 
-
     useEffect(() => {
         if (!tables)
             fetch('/api/util/db/showTables')
-                .then(res => {
-                    if (res.ok)
-                        return res.json();
+                .then((res) => {
+                    if (res.ok) return res.json();
                 })
-                .then(tables => setTables(tables));
+                .then((tables) => setTables(tables));
     }, []);
-
 
     return (
         <>
             <div className="h-screen p-4 lg:p-10 2xl:px-20 2xl:py-10">
-
                 <div>
                     <h1 className="text-3xl font-semibold font-[Inter]">Database</h1>
                     <p className="mt-2 text-base text-gray-500">Database visualization with CRUD functionality</p>
@@ -54,18 +48,18 @@ export default function Page() {
                                 {/* Dropdown button */}
                                 <button
                                     className="inline-flex justify-between items-center w-full md:w-[140px] h-10 cursor-pointer text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600"
-                                    onClick={() => setSourceDropdown(prev => !prev)}
+                                    onClick={() => setSourceDropdown((prev) => !prev)}
                                 >
-                                    {
-                                        selectedSource === 'json' ? <JsonColored className="w-5 h-5" /> :
-                                            selectedSource === 'mysql' ? <MysqlColored className="w-5 h-5" /> :
-                                                null
-                                    }
-                                    {
-                                        selectedSource === 'json' ? 'JSON' :
-                                            selectedSource === 'mysql' ? 'MySQL' :
-                                                'Not selected'
-                                    }
+                                    {selectedSource === 'json' ? (
+                                        <JsonColored className="w-5 h-5" />
+                                    ) : selectedSource === 'mysql' ? (
+                                        <MysqlColored className="w-5 h-5" />
+                                    ) : null}
+                                    {selectedSource === 'json'
+                                        ? 'JSON'
+                                        : selectedSource === 'mysql'
+                                          ? 'MySQL'
+                                          : 'Not selected'}
                                     <svg
                                         className="w-2.5 h-2.5 ms-2.5"
                                         aria-hidden="true"
@@ -102,9 +96,7 @@ export default function Page() {
                                                     checked={selectedSource === 'json'}
                                                     readOnly
                                                 />
-                                                <label
-                                                    className="w-full ms-2 text-sm font-medium rounded cursor-pointer text-gray-900 dark:text-gray-300"
-                                                >
+                                                <label className="w-full ms-2 text-sm font-medium rounded cursor-pointer text-gray-900 dark:text-gray-300">
                                                     JSON
                                                 </label>
                                             </div>
@@ -120,9 +112,7 @@ export default function Page() {
                                                     checked={selectedSource === 'mysql'}
                                                     readOnly
                                                 />
-                                                <label
-                                                    className="w-full ms-2 text-sm font-medium rounded cursor-pointer text-gray-900 dark:text-gray-300"
-                                                >
+                                                <label className="w-full ms-2 text-sm font-medium rounded cursor-pointer text-gray-900 dark:text-gray-300">
                                                     MySQL
                                                 </label>
                                             </div>
@@ -134,8 +124,8 @@ export default function Page() {
                             <div>
                                 {/* Dropdown button */}
                                 <button
-                                    className={`${(selectedSource !== 'mysql' ? 'hidden ' : '')}inline-flex justify-between items-center w-full md:w-[140px] h-10 cursor-pointer text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600`}
-                                    onClick={() => setTableDropdown(prev => !prev)}
+                                    className={`${selectedSource !== 'mysql' ? 'hidden ' : ''}inline-flex justify-between items-center w-full md:w-[140px] h-10 cursor-pointer text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600`}
+                                    onClick={() => setTableDropdown((prev) => !prev)}
                                 >
                                     <TableColored className="w-5 h-5" />
                                     {selectedTable}
@@ -158,36 +148,32 @@ export default function Page() {
                                 {/* Dropdown menu */}
                                 <div
                                     id="dropdownRadio"
-                                    className={`${(!tableDropdown || selectedSource !== 'mysql') ? 'hidden ' : ''}absolute z-10 max-w-80 w-full md:w-[140px] bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600`}
+                                    className={`${!tableDropdown || selectedSource !== 'mysql' ? 'hidden ' : ''}absolute z-10 max-w-80 w-full md:w-[140px] bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600`}
                                 >
                                     <ul
                                         className="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200"
                                         aria-labelledby="dropdownRadioButton"
                                     >
-                                        {
-                                            tables?.map((table, index) => {
-                                                return (
-                                                    <li key={index}>
-                                                        <div
-                                                            className="flex items-center p-2 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
-                                                            onClick={() => handleTableChange(table.name)}
-                                                        >
-                                                            <input
-                                                                type="radio"
-                                                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 dark:bg-gray-700 dark:border-gray-600"
-                                                                checked={selectedTable === table.name}
-                                                                readOnly
-                                                            />
-                                                            <label
-                                                                className="w-full ms-2 text-sm font-medium rounded cursor-pointer text-gray-900 dark:text-gray-300"
-                                                            >
-                                                                {table.name}
-                                                            </label>
-                                                        </div>
-                                                    </li>
-                                                )
-                                            })
-                                        }
+                                        {tables?.map((table, index) => {
+                                            return (
+                                                <li key={index}>
+                                                    <div
+                                                        className="flex items-center p-2 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                                                        onClick={() => handleTableChange(table.name)}
+                                                    >
+                                                        <input
+                                                            type="radio"
+                                                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 dark:bg-gray-700 dark:border-gray-600"
+                                                            checked={selectedTable === table.name}
+                                                            readOnly
+                                                        />
+                                                        <label className="w-full ms-2 text-sm font-medium rounded cursor-pointer text-gray-900 dark:text-gray-300">
+                                                            {table.name}
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                            );
+                                        })}
                                     </ul>
                                 </div>
                             </div>
@@ -256,15 +242,13 @@ export default function Page() {
                             </div>
                         </div>
                     </div>
-                    {
-                        !selectedTable ? null :
-                            !exportBtnRef ? null :
-                                selectedSource === 'mysql' ? <MysqlTable table={selectedTable} exportBtn={exportBtnRef} /> :
-                                    <></>
-                    }
+                    {!selectedTable ? null : !exportBtnRef ? null : selectedSource === 'mysql' ? (
+                        <MysqlTable table={selectedTable} exportBtn={exportBtnRef} />
+                    ) : (
+                        <></>
+                    )}
                 </div>
-
             </div>
         </>
-    )
+    );
 }

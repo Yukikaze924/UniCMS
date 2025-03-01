@@ -26,9 +26,8 @@ class EventEmitter {
      * @param {function(...args: any[]): void} listener - The callback function to remove from the event's listeners.
      */
     unsubscribe(event: string, listener: (...args: any[]) => void) {
-        if (!this.events[event])
-            return; // Return if the event does not exist
-        this.events[event] = this.events[event].filter(l => l !== listener); // Remove the specified listener
+        if (!this.events[event]) return; // Return if the event does not exist
+        this.events[event] = this.events[event].filter((l) => l !== listener); // Remove the specified listener
     }
 
     /**
@@ -37,9 +36,8 @@ class EventEmitter {
      * @param {...any} args - The arguments to pass to the listener functions.
      */
     publish(event: string, ...args: any[]) {
-        if (!this.events[event])
-            return; // Return if there are no subscribers
-        this.events[event].forEach(listener => listener(...args)); // Call all subscribed listener functions
+        if (!this.events[event]) return; // Return if there are no subscribers
+        this.events[event].forEach((listener) => listener(...args)); // Call all subscribed listener functions
     }
 }
 

@@ -1,6 +1,5 @@
-import { MySql2Database } from "drizzle-orm/mysql2";
-import StoreService from "@/lib/contracts/services/StoreService";
-
+import { MySql2Database } from 'drizzle-orm/mysql2';
+import StoreService from '@/lib/contracts/services/StoreService';
 
 class MysqlStoreService extends StoreService {
     declare protected database: MySql2Database;
@@ -11,7 +10,7 @@ class MysqlStoreService extends StoreService {
     }
 
     public async initializeDatabase(name: string, fields: any[]): Promise<void> {
-        const attributes = fields.map(field => {
+        const attributes = fields.map((field) => {
             let fieldDefinition = `${field.name} ${field.type.toUpperCase()}`;
 
             if (field.length) {
@@ -44,7 +43,9 @@ class MysqlStoreService extends StoreService {
 
     public async create<T extends object>(table: string, data: T): Promise<void> {
         const keys = Object.keys(data).join(', ');
-        const values = Object.values(data).map(value => `'${value}'`).join(', ');
+        const values = Object.values(data)
+            .map((value) => `'${value}'`)
+            .join(', ');
 
         const insertSQL = `INSERT INTO ${table} (${keys}) VALUES (${values})`;
         await this.database.execute(insertSQL);
@@ -82,7 +83,6 @@ class MysqlStoreService extends StoreService {
         const deleteSQL = `DELETE FROM ${table} ${whereClause ? `WHERE ${whereClause}` : ''}`;
         await this.database.execute(deleteSQL);
     }
-
 }
 
 export default MysqlStoreService;

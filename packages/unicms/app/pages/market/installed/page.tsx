@@ -1,54 +1,51 @@
-'use client'
+'use client';
 
 import { VerifiedColored } from '@components/svg/status';
 import { useEffect, useState } from 'react';
-
 
 export default function Page() {
     const [plugins, setPlugins] = useState<any[]>();
 
     useEffect(() => {
         fetch('/api/plugin')
-            .then(res => {
-                if (res.ok)
-                    return res.json();
-                else
-                    return [];
+            .then((res) => {
+                if (res.ok) return res.json();
+                else return [];
             })
-            .then(res => setPlugins(res));
+            .then((res) => setPlugins(res));
     }, []);
-
 
     return (
         <>
             <div className="grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3 mt-10 gap-x-6 gap-y-20">
-                {
-                    plugins?.map(plugin => {
-                        return (
-                            <PluginCard key={plugin.name} name={plugin.name} description={plugin.metadata.description} icon={plugin.metadata.icon} />
-                        )
-                    })
-                }
+                {plugins?.map((plugin) => {
+                    return (
+                        <PluginCard
+                            key={plugin.name}
+                            name={plugin.name}
+                            description={plugin.metadata.description}
+                            icon={plugin.metadata.icon}
+                        />
+                    );
+                })}
             </div>
         </>
-    )
+    );
 }
-
 
 function PluginCard({ name, description, icon }) {
     return (
         <>
             <div className="relative flex flex-col min-w-96 max-w-[460px] shadow-md rounded-lg aspect-w-16 aspect-h-9 bg-white border border-gray-100 cursor-pointer">
                 <div className="flex flex-col ms-4 mt-4">
-                    <img
-                        src={icon}
-                        className='w-14 h-14'
-                    />
+                    <img src={icon} className="w-14 h-14" />
                     <div className="mt-4 flex flex-row flex-nowrap items-center">
-                        <h3 className='text-lg font-semibold font-mono'>{name}</h3>
+                        <h3 className="text-lg font-semibold font-mono">{name}</h3>
                         <VerifiedColored className="w-7 h-7 text-blue-700" />
                     </div>
-                    <p className={`mt-2 text-sm overflow-hidden text-ellipsis text-nowrap text-gray-500`}>{description}</p>
+                    <p className={`mt-2 text-sm overflow-hidden text-ellipsis text-nowrap text-gray-500`}>
+                        {description}
+                    </p>
                 </div>
                 <div className="flex justify-end items-end">
                     <button
@@ -78,5 +75,5 @@ function PluginCard({ name, description, icon }) {
                 </div>
             </div>
         </>
-    )
+    );
 }

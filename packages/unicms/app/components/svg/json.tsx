@@ -1,5 +1,4 @@
-import { JSX, SVGProps } from "react"
-
+import { JSX, SVGProps } from 'react';
 
 export function JsonColored(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
     return (
@@ -30,5 +29,5 @@ export function JsonColored(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElem
                 <path d="M39.5 21c-1.103 0-2-.897-2-2v-4c0-1.654-1.346-3-3-3a1 1 0 100 2c.552 0 1 .449 1 1v4c0 1.2.542 2.266 1.382 3a3.975 3.975 0 00-1.382 3v4c0 .551-.448 1-1 1a1 1 0 100 2c1.654 0 3-1.346 3-3v-4c0-1.103.897-2 2-2a1 1 0 100-2zM27.5 24a1 1 0 00-1 1v3a1 1 0 102 0v-3a1 1 0 00-1-1z" />
             </g>
         </svg>
-    )
+    );
 }

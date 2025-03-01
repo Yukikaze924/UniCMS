@@ -1,7 +1,6 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-
+import { useState } from 'react';
 
 export default function Page() {
     const [sortByDropdown, setSortByDropdown] = useState(false);
@@ -12,7 +11,7 @@ export default function Page() {
                 <div>
                     <button
                         className="flex flex-row justify-between items-center w-48 px-1.5 py-1.5 text-gray-700 bg-white border border-gray-200 rounded-md focus:outline-none"
-                        onClick={() => setSortByDropdown(prev => !prev)}
+                        onClick={() => setSortByDropdown((prev) => !prev)}
                     >
                         <span className="select-none text-sm ms-2">Sort by</span>
                         <svg
@@ -43,44 +42,37 @@ export default function Page() {
                     <div
                         className={`${sortByDropdown ? '' : 'hidden '}absolute z-50 w-48 py-2 mt-2 text-sm bg-white rounded-lg shadow-sm`}
                     >
-                        <a
-                            href="#"
-                            className="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white"
-                        >
+                        <a href="#" className="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white">
                             Popularity
                         </a>
-                        <a
-                            href="#"
-                            className="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white"
-                        >
+                        <a href="#" className="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white">
                             Downloads
                         </a>
                     </div>
-                    <div className={`${sortByDropdown ? '' : 'hidden '}fixed inset-0 z-40`} onClick={() => setSortByDropdown(false)}></div>
+                    <div
+                        className={`${sortByDropdown ? '' : 'hidden '}fixed inset-0 z-40`}
+                        onClick={() => setSortByDropdown(false)}
+                    ></div>
                 </div>
             </div>
 
             <div className="grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3 mt-10 gap-x-6 gap-y-20">
-
                 {/* <PluginCard name="Minecraft" description="A uniCMS extension to host Minecraft server" icon="https://pngimg.com/uploads/minecraft/minecraft_PNG74.png" /> */}
-
             </div>
         </>
-    )
+    );
 }
-
 
 function PluginCard({ name, description, icon }) {
     return (
         <>
             <div className="flex flex-col min-w-96 max-w-[460px] shadow-md rounded-lg aspect-w-16 aspect-h-9 bg-white border border-gray-100 cursor-pointer">
                 <div className="flex flex-col ms-4 mt-4">
-                    <img
-                        src={icon}
-                        className='w-14 h-14'
-                    />
-                    <h3 className='mt-4 text-lg font-semibold font-mono'>{name}</h3>
-                    <p className='mt-2 text-sm overflow-hidden text-ellipsis text-nowrap text-gray-500'>{description}</p>
+                    <img src={icon} className="w-14 h-14" />
+                    <h3 className="mt-4 text-lg font-semibold font-mono">{name}</h3>
+                    <p className="mt-2 text-sm overflow-hidden text-ellipsis text-nowrap text-gray-500">
+                        {description}
+                    </p>
                 </div>
                 <div className="flex justify-end items-end">
                     <button
@@ -107,9 +99,8 @@ function PluginCard({ name, description, icon }) {
                         </svg>
                         Install
                     </button>
-
                 </div>
             </div>
         </>
-    )
+    );
 }

@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { FolderColored, JsonFileColored, TextFileColored, UnknownFileColored } from "../svg/file-types";
-import { getExtension } from "@/lib/util/string";
-
+import { useEffect, useRef, useState } from 'react';
+import { FolderColored, JsonFileColored, TextFileColored, UnknownFileColored } from '../svg/file-types';
+import { getExtension } from '@/lib/util/string';
 
 const fileTypesToIcon = {
     folder: FolderColored,
@@ -9,22 +8,25 @@ const fileTypesToIcon = {
     js: JsonFileColored,
     json: JsonFileColored,
     txt: TextFileColored,
-    md: TextFileColored
-}
+    md: TextFileColored,
+};
 
 function getFileTypeIcon(type: FileSystemItem, extension: string) {
     let FileIcon: React.ComponentType | null = null;
     if (type === 'folder') {
         FileIcon = fileTypesToIcon.folder;
-    }
-    else if (type === 'file') {
+    } else if (type === 'file') {
         FileIcon = fileTypesToIcon[extension] || fileTypesToIcon.unknown;
     }
-    return FileIcon ? <FileIcon /> : null
+    return FileIcon ? <FileIcon /> : null;
 }
 
-
-export default function ItemInEdit({ type, defaultValue, onEnter, onCancel }: {
+export default function ItemInEdit({
+    type,
+    defaultValue,
+    onEnter,
+    onCancel,
+}: {
     type: FileSystemItem;
     defaultValue: string;
     onEnter: (str: string) => void;
@@ -33,16 +35,13 @@ export default function ItemInEdit({ type, defaultValue, onEnter, onCancel }: {
     const [contentEditing, setContentEditing] = useState<string>(defaultValue);
     const inputRef = useRef<HTMLInputElement>(null);
 
-
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             onEnter(contentEditing);
-        }
-        else if (e.key === 'Escape') {
+        } else if (e.key === 'Escape') {
             onCancel();
         }
     };
-
 
     useEffect(() => {
         if (inputRef && inputRef.current) {
@@ -50,24 +49,22 @@ export default function ItemInEdit({ type, defaultValue, onEnter, onCancel }: {
         }
     }, [inputRef]);
 
-
     return (
         <>
-            <div className="fixed inset-0 z-40" onClick={() => {
-                if (!contentEditing) {
-                    onCancel();
-                }
-                else {
-                    onEnter(contentEditing);
-                }
-            }}>
-            </div>
+            <div
+                className="fixed inset-0 z-40"
+                onClick={() => {
+                    if (!contentEditing) {
+                        onCancel();
+                    } else {
+                        onEnter(contentEditing);
+                    }
+                }}
+            ></div>
             <div className="z-50 block relative w-full max-w-[324px]">
                 <div className="block">
                     <div className="aspect-w-16 aspect-h-9 rounded-xl border shadow overflow-hidden bg-gray-50">
-                        {
-                            getFileTypeIcon(type, getExtension(contentEditing!)!)
-                        }
+                        {getFileTypeIcon(type, getExtension(contentEditing!)!)}
                     </div>
                     <div className="p-2 space-y-1">
                         <div className="flex items-start justify-between gap-4">
@@ -86,5 +83,5 @@ export default function ItemInEdit({ type, defaultValue, onEnter, onCancel }: {
                 </div>
             </div>
         </>
-    )
+    );
 }

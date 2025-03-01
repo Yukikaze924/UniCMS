@@ -3,11 +3,8 @@ import path from 'path';
 import { getExtension } from './string';
 import { existsSync } from 'fs';
 
-
-export async function fetchDirectoryContents(dirpath: string)
-{
-    if (!dirpath)
-        return;
+export async function fetchDirectoryContents(dirpath: string) {
+    if (!dirpath) return;
 
     const results: any[] = [];
 

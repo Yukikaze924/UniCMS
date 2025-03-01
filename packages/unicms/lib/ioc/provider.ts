@@ -14,10 +14,8 @@ class ServiceProvider {
      * @returns The ServiceProvider instance for method chaining.
      */
     register<T>(name: string, service: T | (() => T)): ServiceProvider {
-        if (typeof service === 'function')
-            global.__singletons[name] = (service as () => T)();
-        else
-            global.__singletons[name] = service;
+        if (typeof service === 'function') global.__singletons[name] = (service as () => T)();
+        else global.__singletons[name] = service;
         return this;
     }
 

@@ -1,6 +1,5 @@
-import services from "@/lib/ioc/provider";
-import MysqlStoreService from "@/lib/services/storage/MysqlStoreService";
-
+import services from '@/lib/ioc/provider';
+import MysqlStoreService from '@/lib/services/storage/MysqlStoreService';
 
 class CollectionService {
     public readonly collection: ICollection;
@@ -39,12 +38,12 @@ class CollectionService {
     }
 
     private _findPrimaryKey(): string {
-        const primaryAttribute = this.collection.attributes.find(attr => (attr as IntAttribute).primary ?? false);
+        const primaryAttribute = this.collection.attributes.find((attr) => (attr as IntAttribute).primary ?? false);
 
         if (primaryAttribute) {
             return primaryAttribute.name;
         } else {
-            throw new Error("No primary attribute found");
+            throw new Error('No primary attribute found');
         }
     }
 }

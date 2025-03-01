@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-
 export const useSessionState = create(
     persist(
         (set) => ({
@@ -21,8 +20,8 @@ export const useSessionState = create(
                 },
                 removeItem: (name) => {
                     sessionStorage.removeItem(name);
-                }
-            }
+                },
+            },
         }
     )
 );

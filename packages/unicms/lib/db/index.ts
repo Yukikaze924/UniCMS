@@ -1,7 +1,6 @@
-import { drizzle } from "drizzle-orm/mysql2";
-import { createPool } from "mysql2/promise";
-import { singleton } from "../lifecycle";
-
+import { drizzle } from 'drizzle-orm/mysql2';
+import { createPool } from 'mysql2/promise';
+import { singleton } from '../lifecycle';
 
 if (!process.env.DATABASE_URL) {
     throw new Error('Missing DATABASE_URL');

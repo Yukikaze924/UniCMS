@@ -18,7 +18,6 @@ build({
     external: [], // 将路径标记为外部依赖
     plugins: [nodeExternalsPlugin()],
     alias: {
-        '@/lib': path.resolve('lib')
-    }
-})
-.catch(() => process.exit(1));
+        '@/lib': path.resolve('lib'),
+    },
+}).catch(() => process.exit(1));

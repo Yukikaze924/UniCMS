@@ -1,5 +1,4 @@
-import CollectionService from "@/lib/services/storage/CollectionService";
-
+import CollectionService from '@/lib/services/storage/CollectionService';
 
 class RouteHandler {
     private collection: CollectionService;

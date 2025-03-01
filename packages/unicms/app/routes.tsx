@@ -1,21 +1,22 @@
-import { JSX, useEffect, useState } from "react";
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { JSX, useEffect, useState } from 'react';
+import { createBrowserRouter, RouterProvider } from 'react-router';
 
 const ROUTES = import.meta.glob('/app/pages/**/page.tsx');
 const PRESERVED = import.meta.glob('/app/pages/(layout|404).(jsx|tsx)', { eager: true });
 
-const parsePreserved = () => Object.keys(PRESERVED).reduce((acc, file) => {
-    const key = file.replace(/\/app\/pages\/|\.(jsx|tsx)$/g, '');
-    acc[key] = (PRESERVED as any)[file].default;
-    return acc;
-}, {});
+const parsePreserved = () =>
+    Object.keys(PRESERVED).reduce((acc, file) => {
+        const key = file.replace(/\/app\/pages\/|\.(jsx|tsx)$/g, '');
+        acc[key] = (PRESERVED as any)[file].default;
+        return acc;
+    }, {});
 
 const getRawRoutes = async () => {
     const routes: any[] = [];
     const preserved = parsePreserved();
 
     for (const route in ROUTES) {
-        const PageModule = await ROUTES[route]() as any;
+        const PageModule = (await ROUTES[route]()) as any;
         const PageComponent = PageModule.default as () => JSX.Element;
         const PageNotFound = preserved['404'] as () => JSX.Element;
 
@@ -31,7 +32,7 @@ const getRawRoutes = async () => {
             props: {
                 mod: ROUTES[route],
                 filepath: route,
-            }
+            },
         });
     }
 
@@ -39,18 +40,18 @@ const getRawRoutes = async () => {
 };
 
 function buildRouterTree(routes: any[]) {
-    const rootRoute = routes.find(route => route.path === '/');
+    const rootRoute = routes.find((route) => route.path === '/');
     const root = {
         path: '/',
         Component: rootRoute.element,
         errorElement: rootRoute.errorElement,
-        children: []
+        children: [],
     } as any;
     const map = {};
 
     map['/'] = root;
 
-    routes.forEach(item => {
+    routes.forEach((item) => {
         const path = item.path as string;
         const segments = path.split('/').filter(Boolean) as string[];
         const element = item.element as () => JSX.Element;
@@ -67,7 +68,7 @@ function buildRouterTree(routes: any[]) {
                     Component: isLast ? element : undefined,
                     errorElement: item.errorElement,
                     children: [],
-                    __props__: item.props
+                    __props__: item.props,
                 };
                 map[currentPath] = newNode;
                 current.children.push(newNode);
@@ -90,7 +91,7 @@ const loadRoutes = async () => {
     const routes = await getRawRoutes();
     const tree = buildRouterTree(routes);
     return [tree];
-}
+};
 
 const ViteRouter = () => {
     const [routes, setRoutes] = useState<any[]>();
@@ -100,18 +101,18 @@ const ViteRouter = () => {
             const r = await loadRoutes();
             setRoutes(r);
 
-            document.title = "UniCMS - Open Source Node.js Headless CMS 🚀";
-        }
+            document.title = 'UniCMS - Open Source Node.js Headless CMS 🚀';
+        };
 
         init();
     }, []);
 
     if (routes)
-    return (
-        <>
-            <RouterProvider router={createBrowserRouter(routes)} />
-        </>
-    )
-}
+        return (
+            <>
+                <RouterProvider router={createBrowserRouter(routes)} />
+            </>
+        );
+};
 
 export default ViteRouter;

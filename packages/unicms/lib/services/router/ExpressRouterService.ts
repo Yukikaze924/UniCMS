@@ -1,6 +1,5 @@
-import express, { Application, Request, Response, Router } from "express";
-import RouterService from "@/lib/contracts/services/RouterService";
-
+import express, { Application, Request, Response, Router } from 'express';
+import RouterService from '@/lib/contracts/services/RouterService';
 
 class ExpressRouterService extends RouterService {
     declare protected router: Application;
