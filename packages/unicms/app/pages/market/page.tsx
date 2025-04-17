@@ -21,11 +21,11 @@ export default function Page() {
         <>
             <div className="h-screen p-4 lg:p-10 2xl:px-20 2xl:py-10 overflow-auto">
                 <div>
-                    <h1 className="text-3xl font-semibold font-[Inter]">Marketplace</h1>
+                    <h1 className="text-3xl font-semibold">Marketplace</h1>
                     <p className="mt-2 text-base text-gray-500">Download extension plugin for UniCMS</p>
                 </div>
 
-                <div className="mt-10">
+                <div className="mt-7">
                     <div className="text-sm font-medium text-center text-gray-500 border-gray-200 dark:text-gray-400 dark:border-gray-700">
                         <ul className="flex -mb-px">
                             <li className="md:me-1.5">

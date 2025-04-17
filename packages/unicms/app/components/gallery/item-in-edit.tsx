@@ -1,25 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { FolderColored, JsonFileColored, TextFileColored, UnknownFileColored } from '../svg/file-types';
-import { getExtension } from '@/lib/util/string';
-
-const fileTypesToIcon = {
-    folder: FolderColored,
-    unknown: UnknownFileColored,
-    js: JsonFileColored,
-    json: JsonFileColored,
-    txt: TextFileColored,
-    md: TextFileColored,
-};
-
-function getFileTypeIcon(type: FileSystemItem, extension: string) {
-    let FileIcon: React.ComponentType | null = null;
-    if (type === 'folder') {
-        FileIcon = fileTypesToIcon.folder;
-    } else if (type === 'file') {
-        FileIcon = fileTypesToIcon[extension] || fileTypesToIcon.unknown;
-    }
-    return FileIcon ? <FileIcon /> : null;
-}
+import { getExtension } from '@unicms/helpers/string';
+import { getFileTypeIcon } from '../common/file-icons';
 
 export default function ItemInEdit({
     type,
@@ -63,8 +44,8 @@ export default function ItemInEdit({
             ></div>
             <div className="z-50 block relative w-full max-w-[324px]">
                 <div className="block">
-                    <div className="aspect-w-16 aspect-h-9 rounded-xl border shadow overflow-hidden bg-gray-50">
-                        {getFileTypeIcon(type, getExtension(contentEditing!)!)}
+                    <div className="aspect-video rounded-xl border shadow overflow-hidden bg-gray-50">
+                        {getFileTypeIcon(type, getExtension(contentEditing) || '')}
                     </div>
                     <div className="p-2 space-y-1">
                         <div className="flex items-start justify-between gap-4">

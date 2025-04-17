@@ -1,9 +1,49 @@
-export default function SuccessToast({ message }: { message: string }) {
+import { useEffect, useState } from 'react';
+
+export default function SuccessToast({
+    message,
+    duration = 3000,
+    isShow,
+    close,
+}: {
+    message: string;
+    duration?: number;
+    isShow: boolean;
+    close: () => void;
+}) {
+    const [isExiting, setIsExiting] = useState(false);
+    const animationDuration = 300;
+
+    const handleClose = () => {
+        setIsExiting(true);
+        setTimeout(() => {
+            close(); // Call the close function after the animation duration
+        }, animationDuration); // Match this duration with your CSS animation duration
+    };
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            handleClose();
+        }, duration);
+
+        return () => clearTimeout(timer);
+    }, []);
+
+    useEffect(() => {
+        if (!isShow) {
+            setIsExiting(false); // Reset exiting state when not showing
+        }
+    }, [isShow]);
+
+    if (!isShow && !isExiting) {
+        return null; // Don't render if not showing and not exiting
+    }
+
     return (
         <>
             <div
                 id="toast-success"
-                className="relative flex items-center w-full max-w-xs p-4 text-gray-500 bg-white rounded-lg shadow-sm dark:text-gray-400 dark:bg-gray-800 duration-300 animate-slide-in"
+                className={`z-50 relative flex items-center w-full max-w-xs p-4 text-gray-500 bg-white rounded-lg shadow-sm dark:text-gray-400 dark:bg-gray-800 duration-300 ${isExiting ? 'animate-slide-out' : 'animate-slide-in'}`}
             >
                 <div className="inline-flex items-center justify-center shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
                     <svg
@@ -21,8 +61,7 @@ export default function SuccessToast({ message }: { message: string }) {
                 <button
                     type="button"
                     className="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
-                    data-dismiss-target="#toast-success"
-                    aria-label="Close"
+                    onClick={handleClose}
                 >
                     <span className="sr-only">Close</span>
                     <svg

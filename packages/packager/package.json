@@ -1,0 +1,25 @@
+{
+    "name": "@unicms/packager",
+    "version": "0.6.0-alpha",
+    "type": "module",
+    "license": "MIT",
+    "author": "Benjamin Dawson",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc --watch"
+    },
+    "dependencies": {
+        "vite": "^6.1.0"
+    },
+    "devDependencies": {
+        "@tailwindcss/vite": "^4.0.8",
+        "@unicms/types": "workspace:*",
+        "@vitejs/plugin-react": "^4.3.4"
+    }
+}

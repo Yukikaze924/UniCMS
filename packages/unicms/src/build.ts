@@ -1,28 +1,58 @@
-import services from "@/lib/ioc/provider";
-import Logger from "@/lib/util/logger";
-import path from "path";
-import fs from 'fs/promises';
-import { cwd } from "process";
+import { services } from '@unicms/ioc';
+import path from 'path';
+import { runBuild } from '@unicms/packager';
+import chalk from 'chalk';
+import type { EnvConfiguration } from '@unicms/types';
+import ora from 'ora';
+import { performance } from 'node:perf_hooks';
 
+export default async function build({ env }: { env: EnvConfiguration }) {
+    const begin_time_ms = performance.now();
+    const spinner = ora(' creating optimized production build...').start();
 
-export default async function build() {
     try {
-        Logger.section("🔨 Creating optimized production build...")
-        console.log('\n');
-
-        const dir = services.get<string>('dirname')!;
-        const srcDir = path.join(dir, '.unicms');
-        const destDir = path.join(cwd(), '.unicms')
-
-        fs.cp(srcDir, destDir, { recursive: true });
+        const dir = process.cwd();
+        await runBuild(
+            {
+                appConfigs: {
+                    appDir: services.get<string>('APP_DIR'),
+                    basePath: '',
+                    cwd: dir,
+                    runtimeDir: dir,
+                    distDir: path.resolve(dir, '.unicms'),
+                    cacheDir: path.resolve(dir, '.cache'),
+                    apiDir: path.resolve(dir, 'api'),
+                    statsDir: path.resolve(dir, 'stats'),
+                },
+                server: {
+                    host: env.HOST_ADDR,
+                    port: env.HOST_PORT,
+                    protocol: env.HOST_PROTOCOL,
+                },
+                env: env,
+                dev: false,
+            },
+            {
+                loglevel: 'silent',
+            }
+        );
+        const built_time_sec = ((performance.now() - begin_time_ms) / 1000).toFixed(2);
+        printDone(built_time_sec);
+    } catch (error) {
+        printError(error);
+        process.exit(1);
     }
-    catch (error) {
 
-    }
+    spinner.stop();
 }
 
-function printError(message: string) {
+const printDone = (seconds: string | number) => {
+    console.clear();
+    console.log(chalk.green(`✔ built in ${seconds}s`));
+};
+
+const printError = (message: any) => {
+    console.clear();
     console.error(message);
-    Logger.error("❌ Production build failed to complete.")
-    console.log();
-}
+    console.log(chalk.red.inverse('❌ failed to complete.'));
+};

@@ -1,17 +1,25 @@
-'use client';
-
-import { useEffect, useRef, useState } from 'react';
+import { createContext, RefObject, useEffect, useRef, useState } from 'react';
 import { MysqlColored, TableColored } from '../../components/svg/mysql';
 import { JsonColored } from '../../components/svg/json';
-import MysqlTable from './mysql-table';
+import MysqlTable from './mysql';
+import { databaseService } from '@/app/api/services';
+
+type ButtonsContextType = {
+    exportBtn: RefObject<HTMLButtonElement | null>;
+    deleteBtn: RefObject<HTMLButtonElement | null>;
+} | null;
+
+export const ButtonsContext = createContext<ButtonsContextType>(null);
 
 export default function Page() {
     const [sourceDropdown, setSourceDropdown] = useState(false);
     const [selectedSource, setSelectedSource] = useState<any>('none');
     const [tableDropdown, setTableDropdown] = useState(false);
-    const [tables, setTables] = useState<any[]>();
+    const [tables, setTables] = useState<string[]>();
     const [selectedTable, setSelectedTable] = useState<string>();
+
     const exportBtnRef = useRef<HTMLButtonElement>(null);
+    const deleteBtnRef = useRef<HTMLButtonElement>(null);
 
     const handleSourceChange = (source: any) => {
         setSelectedSource(source);
@@ -24,19 +32,14 @@ export default function Page() {
     };
 
     useEffect(() => {
-        if (!tables)
-            fetch('/api/util/db/showTables')
-                .then((res) => {
-                    if (res.ok) return res.json();
-                })
-                .then((tables) => setTables(tables));
+        if (!tables) databaseService.showTables().then((tables) => setTables(tables));
     }, []);
 
     return (
-        <>
+        <ButtonsContext.Provider value={{ exportBtn: exportBtnRef, deleteBtn: deleteBtnRef }}>
             <div className="h-screen p-4 lg:p-10 2xl:px-20 2xl:py-10">
                 <div>
-                    <h1 className="text-3xl font-semibold font-[Inter]">Database</h1>
+                    <h1 className="text-3xl font-semibold">Database</h1>
                     <p className="mt-2 text-base text-gray-500">Database visualization with CRUD functionality</p>
                 </div>
 
@@ -159,16 +162,16 @@ export default function Page() {
                                                 <li key={index}>
                                                     <div
                                                         className="flex items-center p-2 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
-                                                        onClick={() => handleTableChange(table.name)}
+                                                        onClick={() => handleTableChange(table)}
                                                     >
                                                         <input
                                                             type="radio"
                                                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 dark:bg-gray-700 dark:border-gray-600"
-                                                            checked={selectedTable === table.name}
+                                                            checked={selectedTable === table}
                                                             readOnly
                                                         />
                                                         <label className="w-full ms-2 text-sm font-medium rounded cursor-pointer text-gray-900 dark:text-gray-300">
-                                                            {table.name}
+                                                            {table}
                                                         </label>
                                                     </div>
                                                 </li>
@@ -199,7 +202,10 @@ export default function Page() {
                                 </svg>
                                 Export
                             </button>
-                            <button className="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md">
+                            <button
+                                ref={deleteBtnRef}
+                                className="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md"
+                            >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="h-5 w-5 mr-2"
@@ -243,12 +249,12 @@ export default function Page() {
                         </div>
                     </div>
                     {!selectedTable ? null : !exportBtnRef ? null : selectedSource === 'mysql' ? (
-                        <MysqlTable table={selectedTable} exportBtn={exportBtnRef} />
+                        <MysqlTable table={selectedTable} />
                     ) : (
                         <></>
                     )}
                 </div>
             </div>
-        </>
+        </ButtonsContext.Provider>
     );
 }

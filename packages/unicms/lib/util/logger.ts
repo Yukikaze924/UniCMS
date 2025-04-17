@@ -1,3 +1,5 @@
+import chalk from 'chalk';
+
 export default class Logger {
     static colors = {
         reset: '\x1b[0m',
@@ -32,12 +34,38 @@ export default class Logger {
     }
 
     /**
+     * Multiple logs in one line
+     * @param logs - The array of log object
+     */
+    static oneline(...logs: { message: string; color?: string; bgColor?: string; bold?: boolean }[]) {
+        let _: string = '';
+        for (const log of logs) {
+            // 使用解构赋值并提供默认值
+            const {
+                message,
+                color = '', // 默认值为空字符串
+                bgColor = '', // 默认值为空字符串
+                bold = false, // 默认值为 false
+            } = log;
+
+            const boldCode = bold ? this.colors.bright : '';
+            const line = `${bgColor}${color}${boldCode}${message}${this.colors.reset}`;
+            _ += line;
+        }
+        console.log(_);
+    }
+
+    static clear() {
+        console.clear();
+    }
+
+    /**
      * Output info message
      * @param {string} message - The message to output
      * @param {boolean} bold - Whether to bold the text
      */
-    static info(message, bold = false) {
-        this.log(message, this.colors.blue, this.colors.bgWhite, bold);
+    static info(message) {
+        console.info(chalk.cyan.inverse(' INFO ') + ' ' + message);
     }
 
     /**
@@ -45,8 +73,8 @@ export default class Logger {
      * @param {string} message - The message to output
      * @param {boolean} bold - Whether to bold the text
      */
-    static success(message, bold = false) {
-        this.log(message, this.colors.green, '', bold);
+    static success(message) {
+        console.log(chalk.green.inverse(' SUCCESS ') + ' ' + message);
     }
 
     /**
@@ -54,8 +82,8 @@ export default class Logger {
      * @param {string} message - The message to output
      * @param {boolean} bold - Whether to bold the text
      */
-    static warning(message, bold = false) {
-        this.log(message, this.colors.yellow, this.colors.bgRed, bold);
+    static warning(message) {
+        console.warn(chalk.yellowBright.inverse(' WARN ') + ' ' + message);
     }
 
     /**
@@ -63,8 +91,8 @@ export default class Logger {
      * @param {string} message - The message to output
      * @param {boolean} bold - Whether to bold the text
      */
-    static error(message, bold = false) {
-        this.log(message, this.colors.white, this.colors.bgRed, bold);
+    static error(message) {
+        console.error(chalk.red.inverse(' ERROR ') + ' ' + message);
     }
 
     /**
@@ -81,8 +109,8 @@ export default class Logger {
      * @param {string} title - The title
      * @param {boolean} bold - Whether to bold the text
      */
-    static section(title, bold = false) {
-        this.log(`${title}`, this.colors.white, this.colors.bgYellow, bold);
+    static section(title, bgColor = this.colors.bgYellow, bold = false) {
+        this.log(`${title}`, this.colors.white, bgColor, bold);
     }
 
     /**
@@ -99,5 +127,10 @@ export default class Logger {
      */
     static blank() {
         console.log();
+    }
+
+    static space() {
+        console.log();
+        return { space: this.space };
     }
 }

@@ -1,7 +1,7 @@
 /**
  * Represents a model of collection.
  */
-type ICollection = {
+type Collection = {
     collectionName: string;
     options?: Options;
     info: Info;
@@ -19,10 +19,13 @@ type Options = Partial<{
  * Metadata information about the collection.
  */
 type Info = {
-    name: string; // Name of the collection
-    description: string; // Description of the collection
-    [key: string]: string | number | boolean; // Additional metadata
+    name: string;
+    description: string;
+    category?: InfoCategory;
+    [key: string]: string | number | boolean;
 };
+
+type InfoCategory = 'raw' | 'binary' | 'media';
 
 /**
  * Base type for all attribute types.
@@ -35,7 +38,7 @@ type AttributeBase = {
 /**
  * Possible attribute types.
  */
-type AttributeType = 'INT' | 'VARCHAR' | 'DATETIME' | 'FLOAT' | 'BOOLEAN' | 'JSON';
+type AttributeType = 'INT' | 'CHAR' | 'VARCHAR' | 'TEXT' | 'LONGTEXT' | 'DATETIME' | 'FLOAT' | 'BOOLEAN' | 'JSON';
 
 /**
  * Type for integer attributes.
@@ -55,8 +58,6 @@ type StringAttribute = AttributeBase & {
     length: number; // Field length
     nullable: boolean; // Is nullable
     defaultValue?: string; // Default value
-    characterSet?: string; // Character set
-    collation?: string; // Collation
 };
 
 /**
@@ -93,7 +94,20 @@ type JsonAttribute = AttributeBase & {
     defaultValue?: object; // Default value
 };
 
+type DefaultAttribute = AttributeBase & {
+    length?: number;
+    nullable: boolean;
+    defaultValue?: string | number | boolean | any;
+};
+
 /**
  * Union type for all attribute types.
  */
-type Attribute = IntAttribute | StringAttribute | DateAttribute | FloatAttribute | BooleanAttribute | JsonAttribute;
+type Attribute =
+    | IntAttribute
+    | StringAttribute
+    | DateAttribute
+    | FloatAttribute
+    | BooleanAttribute
+    | JsonAttribute
+    | DefaultAttribute;

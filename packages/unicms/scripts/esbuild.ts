@@ -15,9 +15,8 @@ build({
     outfile: outFile,
     target: 'node16',
     format: 'esm',
-    external: [], // 将路径标记为外部依赖
+    external: [],
     plugins: [nodeExternalsPlugin()],
-    alias: {
-        '@/lib': path.resolve('lib'),
-    },
-}).catch(() => process.exit(1));
+})
+    .then()
+    .catch(() => process.exit(1));

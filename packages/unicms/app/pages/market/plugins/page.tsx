@@ -66,7 +66,7 @@ export default function Page() {
 function PluginCard({ name, description, icon }) {
     return (
         <>
-            <div className="flex flex-col min-w-96 max-w-[460px] shadow-md rounded-lg aspect-w-16 aspect-h-9 bg-white border border-gray-100 cursor-pointer">
+            <div className="flex flex-col min-w-96 max-w-[460px] shadow-md rounded-lg aspect-video bg-white border border-gray-100 cursor-pointer">
                 <div className="flex flex-col ms-4 mt-4">
                     <img src={icon} className="w-14 h-14" />
                     <h3 className="mt-4 text-lg font-semibold font-mono">{name}</h3>

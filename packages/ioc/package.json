@@ -1,0 +1,17 @@
+{
+    "name": "@unicms/ioc",
+    "version": "0.6.0-alpha",
+    "type": "module",
+    "license": "MIT",
+    "author": "Benjamin Dawson",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc --watch"
+    }
+}

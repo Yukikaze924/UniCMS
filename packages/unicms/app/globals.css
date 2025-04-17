@@ -51,11 +51,3 @@
 html {
     overflow: hidden;
 }
-
-.h-100-64 {
-    height: calc(100vh - 64px) !important;
-}
-
-.min-h-100-64 {
-    min-height: calc(100vh - 64px) !important;
-}

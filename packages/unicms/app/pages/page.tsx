@@ -1,6 +1,6 @@
 import { Outlet, useLocation, useNavigate } from 'react-router';
-import Header from '../components/header';
-import Sidebar from '../components/sidebar';
+import Header from '../components/common/header';
+import Sidebar from '../components/common/sidebar';
 import { useEffect } from 'react';
 
 export default function Page() {
@@ -13,11 +13,11 @@ export default function Page() {
 
     return (
         <>
-            <div className="antialiased">
+            <div className="antialiased font-[Inter]">
                 <div className="flex flex-row w-screen h-screen overflow-x-auto overflow-y-hidden xl:overflow-hidden">
                     <Header />
                     <Sidebar />
-                    <main className="w-full pt-16 md:pt-0 min-h-screen bg-neutral-50">
+                    <main className="w-full pt-16 md:pt-0 h-[calc(100vh-64px)] md:h-screen bg-neutral-50">
                         <Outlet />
                     </main>
                 </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { extractInitials } from '@/lib/util/string';
+import { extractInitials } from '@unicms/helpers/string';
 
 export default function Avatar({ name, base64, size }: { name?: string; base64?: string; size: number }) {
     const style = {

@@ -1,6 +1,5 @@
 # UniCMS
-.unicms/
-/api/**/*
+playground/**/*
 
 # Package Manager
 node_modules/

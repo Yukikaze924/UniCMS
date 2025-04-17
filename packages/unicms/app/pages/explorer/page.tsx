@@ -1,72 +1,104 @@
 'use client';
 
-import ItemIMDb from '@components/gallery/item-imdb';
 import ItemFolder from '@components/gallery/item-folder';
 import { useEffect, useRef, useState } from 'react';
 import ItemInEdit from '@components/gallery/item-in-edit';
 import ItemFile from '@components/gallery/item-file';
 import NavToTop from '@components/buttons/nav-to-top';
-import ContextMenu from '@components/context-menu';
+import { fileSystemService, processService } from '@/app/api/services';
+import { useContextMenu } from '@/app/components/providers/menu';
+import { useNavigate } from 'react-router';
+import { useExplorerSettings } from '@/lib/zustand/useExplorerSettings';
 
-export default function ExplorerPage({ dirpath }: any) {
+export default function Page() {
+    const nav = useNavigate();
+    const { settings, toggleHiddenItems } = useExplorerSettings();
+
+    const [homeDir, setHomeDir] = useState<string>();
     const [contents, setContents] = useState<any[]>([]);
-    const [currentPath, setCurrentPath] = useState(dirpath);
+    const [workingDir, setWorkingDir] = useState<string>();
     const [pathSegments, setPathSegments] = useState<string[]>();
-    const [contextMenu, setContextMenu] = useState<{ x: number; y: number; isVisible: boolean }>({
-        x: 0,
-        y: 0,
-        isVisible: false,
-    });
+    const { showContextMenu, hideContextMenu } = useContextMenu();
     const [isFolderEditing, setIsFolderEditing] = useState(false);
     const [isFileEditing, setIsFileEditing] = useState(false);
     const [scrollTop, setScrollTop] = useState(0);
     const scrollArea = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        fetchContents(dirpath);
+        const fetch = async () => {
+            const env = await processService.env();
+            setHomeDir(window.unicms.appConfigs.runtimeDir);
+            setWorkingDir(env.UNICMS_DIR);
+        };
+        fetch();
     }, []);
 
     useEffect(() => {
-        if (currentPath) {
-            fetch(`/api/path/relative?from=${dirpath}&to=${currentPath}`)
-                .then((res) => res.json())
-                .then((result) => {
-                    setPathSegments(result.split(/[/\\]+/).filter(Boolean));
-                });
-        }
-    }, [currentPath]);
+        homeDir && fetchContents(homeDir);
+    }, [homeDir]);
 
-    async function fetchContents(_dirpath: string) {
+    useEffect(() => {
+        if (homeDir && workingDir) {
+            fileSystemService.relativePath(homeDir, workingDir).then((result) => {
+                setPathSegments(result.split(/[/\\]+/).filter(Boolean));
+            });
+        }
+    }, [workingDir]);
+
+    const fetchContents = async (dir: string) => {
         try {
-            const response = await fetch('/api/util/io/fetchDir?args_0=' + _dirpath);
-            const data = await response.json();
+            const data = await fileSystemService.readDir(dir);
             setContents(data);
         } catch (error) {
             setContents([]);
         }
-    }
-
-    const handleDirectoryChange = (_dirpath: string) => {
-        fetchContents(_dirpath);
-        setCurrentPath(_dirpath);
     };
 
-    const showContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
+    const handleDirectoryChange = (dir: string) => {
+        fetchContents(dir);
+        setWorkingDir(dir);
+    };
+
+    const openContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
         event.preventDefault();
-        setContextMenu({ x: event.clientX, y: event.clientY, isVisible: true });
+        event.stopPropagation();
+        showContextMenu(
+            [
+                {
+                    label: 'Refresh',
+                    action: handleRefresh,
+                },
+                {
+                    label: 'Create',
+                    children: [
+                        {
+                            label: 'New File...',
+                            action: handleNewFile,
+                        },
+                        {
+                            label: 'New Folder...',
+                            action: handleNewFolder,
+                        },
+                    ],
+                },
+            ],
+            { x: event.clientX, y: event.clientY }
+        );
     };
 
-    const closeContextMenu = () => setContextMenu((prev) => ({ ...prev, isVisible: false }));
-
-    const handleRefresh = () => fetchContents(currentPath);
+    const handleRefresh = () => {
+        hideContextMenu();
+        setContents([]);
+        fetchContents(workingDir!);
+    };
 
     const handleNewFile = () => {
-        closeContextMenu();
+        hideContextMenu();
         setIsFileEditing(true);
     };
 
     const handleNewFolder = () => {
-        closeContextMenu();
+        hideContextMenu();
         setIsFolderEditing(true);
     };
 
@@ -83,8 +115,8 @@ export default function ExplorerPage({ dirpath }: any) {
         <>
             <div
                 ref={scrollArea}
-                className="h-screen px-6 py-6 overflow-y-scroll"
-                onContextMenu={showContextMenu}
+                className="h-[calc(100vh-112px)] md:h-screen px-6 py-6 overflow-y-scroll"
+                onContextMenu={openContextMenu}
                 onScroll={onScroll}
             >
                 <nav
@@ -94,7 +126,7 @@ export default function ExplorerPage({ dirpath }: any) {
                     <ol className="inline-flex items-center space-x-1 md:space-x-2">
                         <li
                             className="inline-flex items-center cursor-pointer"
-                            onClick={() => handleDirectoryChange(dirpath)}
+                            onClick={() => handleDirectoryChange(homeDir!)}
                         >
                             <span className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
                                 <svg
@@ -112,7 +144,7 @@ export default function ExplorerPage({ dirpath }: any) {
                                         clipRule="evenodd"
                                     />
                                 </svg>
-                                root
+                                home
                             </span>
                         </li>
                         {pathSegments?.map((item, index) => {
@@ -120,9 +152,9 @@ export default function ExplorerPage({ dirpath }: any) {
                                 <li
                                     key={index}
                                     onClick={() => {
-                                        const relativePath = pathSegments.slice(0, index + 1).join('/');
-                                        fetch(`/api/path/join/${dirpath}/${relativePath}`)
-                                            .then((res) => res.json())
+                                        const path = pathSegments.slice(0, index + 1).join('/');
+                                        fileSystemService
+                                            .resolvePath(homeDir!, path)
                                             .then((path) => handleDirectoryChange(path));
                                     }}
                                 >
@@ -154,7 +186,7 @@ export default function ExplorerPage({ dirpath }: any) {
 
                 <div className="lg:max-w-screen-2xl xl:max-w-full lg:mx-auto mt-5 md:mt-10 p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-8 justify-items-center overflow-hidden">
                     {contents.map((content: any) => {
-                        if (content.type === 'directory') {
+                        if (content.type === 'directory' || content.type === 'schema') {
                             return (
                                 <ItemFolder
                                     key={content.name}
@@ -168,16 +200,8 @@ export default function ExplorerPage({ dirpath }: any) {
                                 <ItemFile
                                     key={content.name}
                                     content={content}
-                                    onClick={() => undefined}
+                                    onClick={() => nav(`/editor?path=${content.path}`)}
                                     onRefresh={handleRefresh}
-                                />
-                            );
-                        } else if (content.type === 'imdb') {
-                            return (
-                                <ItemIMDb
-                                    key={content.name}
-                                    content={content}
-                                    onClick={() => handleDirectoryChange(content.path)}
                                 />
                             );
                         }
@@ -189,16 +213,9 @@ export default function ExplorerPage({ dirpath }: any) {
                                 defaultValue="New Folder"
                                 onEnter={(str) => {
                                     setIsFolderEditing(false);
-                                    fetch(`/api/path/join/${currentPath}/${str}`)
-                                        .then((res) => {
-                                            if (res.ok) return res.json();
-                                            else return;
-                                        })
-                                        .then((path) => {
-                                            fetch(`/api/fs/mkdir?path=${path}`).then((_res) => {
-                                                handleRefresh();
-                                            });
-                                        });
+                                    fileSystemService.joinPath(workingDir!, str).then((dir) => {
+                                        fileSystemService.mkdir(dir).then(handleRefresh);
+                                    });
                                 }}
                                 onCancel={() => {
                                     setIsFolderEditing(false);
@@ -213,16 +230,9 @@ export default function ExplorerPage({ dirpath }: any) {
                                 defaultValue="New File"
                                 onEnter={(str) => {
                                     setIsFileEditing(false);
-                                    fetch(`/api/path/join/${currentPath}/${str}`)
-                                        .then((res) => {
-                                            if (res.ok) return res.json();
-                                            else return;
-                                        })
-                                        .then((path) => {
-                                            fetch(`/api/fs/ensurefile?path=${path}`).then((_res) => {
-                                                handleRefresh();
-                                            });
-                                        });
+                                    fileSystemService.joinPath(workingDir!, str).then((path) => {
+                                        fileSystemService.writeFile(path, '\n').then(handleRefresh);
+                                    });
                                 }}
                                 onCancel={() => {
                                     setIsFileEditing(false);
@@ -233,32 +243,6 @@ export default function ExplorerPage({ dirpath }: any) {
                 </div>
 
                 <NavToTop scrollTop={scrollTop} scrollToTop={scrollToTop} />
-
-                <ContextMenu
-                    x={contextMenu.x}
-                    y={contextMenu.y}
-                    visible={contextMenu.isVisible}
-                    items={[
-                        {
-                            label: 'Refresh',
-                            action: handleRefresh,
-                        },
-                        {
-                            label: 'Create',
-                            children: [
-                                {
-                                    label: 'New File...',
-                                    action: handleNewFile,
-                                },
-                                {
-                                    label: 'New Folder...',
-                                    action: handleNewFolder,
-                                },
-                            ],
-                        },
-                    ]}
-                    onClose={closeContextMenu}
-                />
             </div>
         </>
     );

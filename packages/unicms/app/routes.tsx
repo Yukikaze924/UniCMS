@@ -98,10 +98,7 @@ const ViteRouter = () => {
 
     useEffect(() => {
         const init = async () => {
-            const r = await loadRoutes();
-            setRoutes(r);
-
-            document.title = 'UniCMS - Open Source Node.js Headless CMS 🚀';
+            setRoutes(await loadRoutes());
         };
 
         init();

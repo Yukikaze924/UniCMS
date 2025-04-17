@@ -1,53 +1,56 @@
-import path from 'path';
-import RouteHandler from '@/lib/handler/RouteHandler';
-import fs from 'fs/promises';
-import CollectionService from '@/lib/services/storage/CollectionService';
-import { Dirent } from 'fs';
+import type { CoreContext, RequestHandler } from '@unicms/types';
 
 abstract class RouterService {
     protected router: any;
-    protected routes: RouteHandler[] = [];
-    protected methods: RequestMethod[];
+    protected routes: any[] = [];
 
     constructor(router: any) {
         this.router = router;
-        this.methods = ['GET', 'POST', 'PUT', 'DELETE'];
     }
 
     /**
-     * Adds a GET route
+     * Expose internal router
+     * @internal INTERNAL USE ONLY - This is a dangerous
+     * method to expose the internal router.
+     */
+    __unwrap__() {
+        return this.router;
+    }
+
+    /**
+     * Add a GET route
      * @param path The route path
      * @param handler The function to handle the request
      */
-    public abstract get(path: string, handler: (req: any, res: any) => void): void;
+    public abstract get(path: string, handler: RequestHandler): void;
 
     /**
      * Add a POST route
      * @param path The route path
      * @param handler The function to handle the request
      */
-    public abstract post(path: string, handler: (req: any, res: any) => void): void;
+    public abstract post(path: string, handler: RequestHandler): void;
 
     /**
      * Add a PUT route
      * @param path The route path
      * @param handler The function to handle the request
      */
-    public abstract put(path: string, handler: (req: any, res: any) => void): void;
+    public abstract put(path: string, handler: RequestHandler): void;
 
     /**
      * Add a DELETE route
      * @param path The route path
      * @param handler The function to handle the request
      */
-    public abstract delete(path: string, handler: (req: any, res: any) => void): void;
+    public abstract delete(path: string, handler: RequestHandler): void;
 
     /**
      * Add a route
      * @param path The route path
      * @param handler The function to handle the request
      */
-    public abstract respond(path: string, handler: (req: any, res: any) => void): void;
+    public abstract respond(path: string, handler: RequestHandler): void;
 
     /**
      * Add a router
@@ -60,80 +63,42 @@ abstract class RouterService {
      * Add a middleware
      * @param middleware The middleware function
      */
-    public abstract use(middleware: (req: any, res: any, next: () => void) => void): void;
+    public abstract use(middleware: RequestHandler): void;
 
     /**
-     * Serve static directory
-     */
-    public abstract serve(path: string): void;
-
-    /**
-     * Start the router service
-     *
-     * This method initializes the router service and begins listening for incoming requests
-     * on the specified address and port. It can optionally accept a callback function that
-     * will be executed once the server has started successfully.
-     *
-     * @param addr The address to listen on (e.g., 'localhost' or '0.0.0.0').
-     * @param port The port number to listen on (e.g., 3000).
-     * @param callback An optional function that will be called once the server starts successfully.
-     *                 This can be used for logging or performing additional setup tasks.
-     */
-    public abstract start(addr: string, port: number, callback?: () => void): void;
-
-    /**
-     * Create a Http Adapter
+     * Create a HTTP Context
      *
      * @param req The http request
      * @param res The http response
      */
-    public abstract createHttpAdapter(req: HttpRequest, res: HttpResponse): HttpAdapter;
+    public abstract createContext(request: any, response: any): CoreContext;
 
     /**
-     * Create directory-based routes
-     * @param basePath The base path for the routes
-     * @param routes An object representing the directory structure and corresponding handlers
+     * Create a HTTP Handler
+     *
+     * @param handler A callback using UniCMS's http context
      */
-    public async createDirectoryRoutes(basePath: string): Promise<void> {
-        try {
-            await fs.access(basePath); // Check if the directory exists
-            await this.searchForRoute(basePath);
-        } catch (error) {
-            return;
-        }
-    }
+    public abstract createRequestHandler(handler: RequestHandler): any;
 
-    private async searchForRoute(dirPath: string): Promise<void> {
-        const dirnames = await fs.readdir(dirPath, { withFileTypes: true });
+    /**
+     * Create a HTTP middleware
+     *
+     * @param handler A callback using UniCMS's http context
+     */
+    public abstract createMiddleware(handler: RequestHandler): any;
 
-        for (const dirent of dirnames) {
-            const fullPath = path.join(dirPath, dirent.name);
-            if (dirent.isDirectory()) {
-                await this.searchForRoute(fullPath);
-            } else if (this.isValidFile(dirent)) {
-                await this.processFile(dirPath, fullPath);
-            }
-        }
-    }
-
-    private async processFile(dirPath: string, fullPath: string): Promise<void> {
-        const relativePath = path.relative(path.dirname(dirPath), dirPath);
-        const prefix = relativePath ? `/${relativePath}` : '';
-
-        try {
-            const collection = await fs.readFile(path.join(dirPath, 'schema.json'), 'utf-8'); // Read file as text
-            const parsedCollection = JSON.parse(collection); // Parse JSON
-            const handler = new RouteHandler(new CollectionService(parsedCollection));
-            this.respond(`/api${prefix}/:id?`, (req, res) => handler.handle(this.createHttpAdapter(req, res)));
-            await handler.init();
-        } catch (error) {
-            console.error(`Error processing ${fullPath}:`, error);
-        }
-    }
-
-    protected isValidFile(dirent: Dirent): boolean {
-        return dirent.isFile() && dirent.name === 'schema.json';
-    }
+    /**
+     * Resolve route path with params.
+     *
+     * convert UniCMS's directory-based route to certain platform route pattern.
+     *
+     * @example
+     * UniCMS: '[param]', '[...params]'
+     * -> Express: '/:param', '/*'
+     * -> Koa: TODO
+     * -> Fastify: TODO
+     */
+    public abstract resolveRouteWithParams(path: string): string;
 }
 
-export default RouterService;
+export { RouterService };
